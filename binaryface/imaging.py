@@ -8,12 +8,12 @@ from configobj import ConfigObj
 def _load_template_config(template_name):
     template_filename = os.path.join(
         os.curdir,
-        'template',
+        'templates',
         template_name,
         'config.ini'
     )
     try:
-        config = ConfigObj(template_filename)
+        config = ConfigObj(template_filename, file_error=True)
     except Exception as e:
         exit(e)
     else:
