@@ -11,7 +11,7 @@ def parse_args():
         'f', metavar='FILE', help='File with data')
     parser.add_argument(
         '-t', action='store', metavar='TEMPLATE', default='default',
-        dest='template', help='Template name')
+        dest='template', help='Template name. Default is "default"')
     parser.add_argument(
         '--sep', action='store', metavar='SEPARATOR', default=',',
         help='Separator for attributes. Default is ","')
@@ -21,6 +21,10 @@ def parse_args():
     parser.add_argument(
         '--fill', action='store', metavar='VALUE', default=0,
         help='Use VALUE for unused attributes. Default is 0')
+    parser.add_argument(
+        '--class', choices=('first', 'last', 'no'), default='last',
+        help='Define which column contains class attribute. Default is "last"'
+    )
     parser.epilog = """
     For more information visit https://github.com/mfoxru/binary-face
     """
