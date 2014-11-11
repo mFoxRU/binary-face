@@ -37,7 +37,7 @@ class ImageSet(object):
         (i.e. 0, 1) and values are dictionaries of ImageItem __init__
         parameters
         :param attribute: Attribute that is visualised by the current image set
-        :param parent: Images set parent name. This parameter is used for
+        :param parent: Images set parent object. This parameter is used for
         image positioning. If parent is None then image will be positioned
         against the top left corner
         If parent is not None, the following parameters will be used to
@@ -60,10 +60,21 @@ class ImageSet(object):
         if name in self.imagesets:
             exit('Name conflict. Image set "{}" already exists'.format(name))
         self.name = name
-        self.parent = parent
+        if parent is None:
+            self.parent = None
+        else:
+            if parent in self.imagesets:
+                self.parent = self.imagesets[parent]
+                self.parent.add_child(self)
+            else:
+                exit(
+                    'Could not find parent "{}" for set "{}". Check if parent'
+                    ' exists and is placed before child in template config.'.
+                    format(parent, name))
+        self.children = None
         if attribute is None:
             if self.attributes:
-                self.attribute = len(attribute)
+                self.attribute = len(self.attributes)
             else:
                 self.attribute = 0
         else:
@@ -78,3 +89,9 @@ class ImageSet(object):
         for image_name, params in imagesets.iteritems():
             self.images[image_name] = ImageItem(**params)
         self.imagesets[name] = self
+
+    def add_child(self, child):
+        if self.children is None:
+            self.children = [child]
+        else:
+            self.children.append(child)
