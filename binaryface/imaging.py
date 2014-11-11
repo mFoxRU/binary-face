@@ -26,7 +26,7 @@ class ImageItem(object):
 
 class ImageSet(object):
     imagesets = {}
-    attributes = []
+    attributes = {}
 
     def __init__(self, name, imagesets, attribute=None, parent=None,
                  align=None, offset=None):
@@ -61,15 +61,17 @@ class ImageSet(object):
             exit('Name conflict. Image set "{}" already exists'.format(name))
         self.name = name
         self.parent = parent
-        if attribute is not None:
-            self.attribute = attribute
-        else:
-            if len(self.attributes):
-                self.attribute = max(self.attributes) + 1
+        if attribute is None:
+            if self.attributes:
+                self.attribute = len(attribute)
             else:
                 self.attribute = 0
+        else:
+            self.attribute = attribute
         if self.attribute not in self.attributes:
-            self.attributes.append(self.attribute)
+            self.attributes[self.attribute] = [self]
+        else:
+            self.attributes[self.attribute].append(self)
         self.align = align
         self.offset = offset
         self.images = {}
