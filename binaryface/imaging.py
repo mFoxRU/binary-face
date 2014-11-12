@@ -20,13 +20,33 @@ class ImageItem(object):
         except Exception as e:
             exit('Could not load file "{0}". {1}'.
                  format(image, e))
+        self.width, self.height = self.image.size
         self.align = align
         self.offset = offset
+
+    def has_align(self):
+        return True if self.align is not None else False
+
+    def has_offset(self):
+        return True if self.offset is not None else False
 
 
 class ImageSet(object):
     imagesets = {}
     attributes = {}
+
+    # x is ImageSet object, y is ImageItem name (in ImageSet.imagesets dict)
+    _align_formula = {
+        1: lambda x, y: (0,                     0),
+        2: lambda x, y: (x.images[y].width/2,   0),
+        3: lambda x, y: (x.images[y].width-1,   0),
+        4: lambda x, y: (0,                     x.images[y].heigth/2),
+        5: lambda x, y: (x.images[y].width/2,   x.images[y].heigth/2),
+        6: lambda x, y: (x.images[y].width-1,   x.images[y].heigth/2),
+        7: lambda x, y: (0,                     x.images[y].heigth-1),
+        8: lambda x, y: (x.images[y].width/2,   x.images[y].heigth-1),
+        9: lambda x, y: (x.images[y].width-1,   x.images[y].heigth-1),
+    }
 
     def __init__(self, name, imagesets, attribute=None, parent=None,
                  align=None, offset=None):
@@ -38,16 +58,16 @@ class ImageSet(object):
         parameters
         :param attribute: Attribute that is visualised by the current image set
         :param parent: Images set parent object. This parameter is used for
-        image positioning. If parent is None then image will be positioned
-        against the top left corner
+        image positioning. If parent is None then image's top left corner will
+        be positioned at (0, 0)
         If parent is not None, the following parameters will be used to
         position image:
         :param align: Determines align point of the parent image. 1 is top left
         pixel (0,0), 2 is top middle pixel, 5 is center, etc. See table for
         reference. When calculating points 2, 4, 5, 6, 8 values a rounded
-        down (i.e. 100.5 -> 100)
+        up (i.e. 100.5 -> 101)
         :param offset: tuple (X, Y) of int representing offset of top left
-        point of image from the parent image align point. Can be negative
+        point of image from the parent image align point. Can be negative.
         Table:
             1---2---3------> X
             |       |
@@ -91,6 +111,10 @@ class ImageSet(object):
         self.imagesets[name] = self
 
     def add_child(self, child):
+        """
+        Add child to parent list
+        :param child: ImageSet object
+        """
         if self.children is None:
             self.children = [child]
         else:
