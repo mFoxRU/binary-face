@@ -3,6 +3,7 @@ __author__ = 'mFoxRU'
 import os
 
 from configobj import ConfigObj
+from validate import Validator
 
 from imaging import ImageSet
 
@@ -14,16 +15,21 @@ def load_template(template_name='default'):
     in ./templates folder. Template folder must contain config.ini file in it
     If no name is provided the default template will be used
     """
-    template_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'templates', template_name)
+    appdir = os.path.dirname(os.path.realpath(__file__))
+    templates_dir = 'templates'
+    template_config = os.path.join(appdir, templates_dir, 'tempconf.ini')
+    template_dir = os.path.join(appdir, templates_dir, template_name)
     config_filename = os.path.join(template_dir, 'config.ini')
     try:
-        template = ConfigObj(config_filename, file_error=True)
+        template = ConfigObj(config_filename, configspec=template_config,
+                             file_error=True)
     except Exception as e:
-        exit('Could not read config file "{0}". {1}'.format(config_filename,
-                                                            e))
+        exit('Could not read config "{0}". {1}'.format(config_filename, e))
     else:
-        #ToDo: Add validation
+        validator = Validator()
+        is_valid = template.validate(validator)
+        if not is_valid:
+            exit('Config file validation failed!')
         for set_name in template.sections:
             imagesets, params = {}, {}
             for k, v in template[set_name].items():
