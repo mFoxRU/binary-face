@@ -1,5 +1,7 @@
 __author__ = 'mFoxRU'
 
+import operator
+
 from PIL import Image
 
 
@@ -85,13 +87,11 @@ class ImageSet(object):
         else:
             if parent in self.imagesets:
                 self.parent = self.imagesets[parent]
-                self.parent.add_child(self)
             else:
                 exit(
                     'Could not find parent "{}" for set "{}". Check if parent'
                     ' exists and is placed before child in template config.'.
                     format(parent, name))
-        self.children = None
         if attribute is None:
             if self.attributes:
                 self.attribute = len(self.attributes)
@@ -109,13 +109,3 @@ class ImageSet(object):
         for image_name, params in imagesets.iteritems():
             self.images[image_name] = ImageItem(**params)
         self.imagesets[name] = self
-
-    def add_child(self, child):
-        """
-        Add child to parent list
-        :param child: ImageSet object
-        """
-        if self.children is None:
-            self.children = [child]
-        else:
-            self.children.append(child)
