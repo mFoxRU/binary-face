@@ -1,8 +1,10 @@
 __author__ = 'mFoxRU'
 
 import argparse
+from itertools import izip
 
 from templating import load_template
+import imaging
 
 
 def parse_args():
@@ -64,7 +66,8 @@ def main():
     conf = parse_args()
     load_template(conf.template)
     data, classes = read_file(**conf.__dict__)
-
+    for attribute_set, set_class in izip(data, classes):
+        imaging.ImageSet.make_image(attribute_set, conf.fill)
 
 if __name__ == '__main__':
     main()

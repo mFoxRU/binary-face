@@ -159,3 +159,31 @@ class ImageSet(object):
             top_left[1] + self.images[value].height - 1,
         ]
         self.composed[self.name] = [top_left, bottom_right]
+
+    @classmethod
+    def make_image(cls, values, fill_value):
+        cls.composed = {}
+        if not cls.imagesets:
+            exit('No imagesets loaded')
+        for name, imageset in cls.imagesets.iteritems():
+            if name not in cls.composed:
+                imageset.calculate(values)
+
+        fnd = lambda x, y: (v[x][y] for v in cls.composed.itervalues())
+        # Adjust images coordinates so that final image will be positioned
+        # against the top-left side
+        adjust = [0 - min(fnd(0, 0)), 0 - min(fnd(0, 1))]
+
+        image_size = [max(fnd(1, 0))-adjust[0]+1, max(fnd(1, 1))-adjust[1]+1]
+
+        image = Image.new('RGBA', image_size)
+        for name, imageset in cls.imagesets.iteritems():
+            image.paste(
+                imageset.images[values[imageset.attribute]].image,
+                (
+                    cls.composed[name][0][0] + adjust[0],
+                    cls.composed[name][0][1] + adjust[1]
+                ),
+                imageset.images[values[imageset.attribute]].image
+            )
+        image.save(''.join(values)+'.png')
