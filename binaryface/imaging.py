@@ -110,23 +110,25 @@ class ImageSet(object):
             self.images[image_name] = ImageItem(**params)
         self.imagesets[name] = self
 
-    def offset_from_parent(self, value):
+    def offset_from_parent(self, values):
         """
         Calculates image offset from parent top-left edge
-        :param value: Image name
+        :param values: List of values for current image
         :return: Tuple of [X, Y] offset
         """
         if self.parent is None:
             return [0, 0]
         # Calculate align offset point
-        elif self.images[value].has_align():
+        value = values[self.attribute]
+        parent_value = values[self.parent.attribute]
+        if self.images[value].has_align():
             align = self.images[value].align
         elif self.align is not None:
             align = self.align
         else:
             align = 1
         formula = self._align_formula[int(align)]
-        offset = formula(self.parent, value)
+        offset = formula(self.parent, parent_value)
         # Offset offset
         if self.images[value].has_offset:
             offset = map(operator.add, offset, self.images[value].offset)
