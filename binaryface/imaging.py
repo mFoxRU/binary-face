@@ -36,6 +36,7 @@ class ImageItem(object):
 class ImageSet(object):
     imagesets = {}
     attributes = {}
+    composed = {}
 
     # x is ImageSet object, y is ImageItem name (in ImageSet.imagesets dict)
     _align_formula = {
@@ -139,3 +140,22 @@ class ImageSet(object):
         else:
             offset = align_point
         return offset
+
+    def calculate(self, values):
+        """
+        Calculates image coordinates
+        :param values: List of values for current image
+        """
+        if self.parent is not None and self.parent.name not in self.composed:
+            self.parent.calculate(values)
+
+        # Top-left coordinates are used for positioning
+        top_left = self.offset_from_parent(values)
+
+        # Bottom-right coordinates are used co calculate final image size
+        value = values[self.attribute]
+        bottom_right = [
+            top_left[0] + self.images[value].width - 1,
+            top_left[1] + self.images[value].height - 1,
+        ]
+        self.composed[self.name] = [top_left, bottom_right]
