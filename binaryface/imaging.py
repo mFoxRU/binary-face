@@ -118,7 +118,8 @@ class ImageSet(object):
         """
         if self.parent is None:
             return [0, 0]
-        # Calculate align offset point
+
+        # Calculate align point coordinates
         value = values[self.attribute]
         parent_value = values[self.parent.attribute]
         if self.images[value].has_align():
@@ -128,10 +129,13 @@ class ImageSet(object):
         else:
             align = 1
         formula = self._align_formula[int(align)]
-        offset = formula(self.parent, parent_value)
-        # Offset offset
+        align_point = formula(self.parent, parent_value)
+
+        # Calculate coordinates with offset from align point
         if self.images[value].has_offset:
-            offset = map(operator.add, offset, self.images[value].offset)
+            offset = map(operator.add, align_point, self.images[value].offset)
         elif self.offset is not None:
-            offset = map(operator.add, offset, self.offset)
+            offset = map(operator.add, align_point, self.offset)
+        else:
+            offset = align_point
         return offset
