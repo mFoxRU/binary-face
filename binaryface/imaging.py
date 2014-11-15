@@ -43,12 +43,12 @@ class ImageSet(object):
         1: lambda x, y: (0,                     0),
         2: lambda x, y: (x.images[y].width/2,   0),
         3: lambda x, y: (x.images[y].width-1,   0),
-        4: lambda x, y: (0,                     x.images[y].heigth/2),
-        5: lambda x, y: (x.images[y].width/2,   x.images[y].heigth/2),
-        6: lambda x, y: (x.images[y].width-1,   x.images[y].heigth/2),
-        7: lambda x, y: (0,                     x.images[y].heigth-1),
-        8: lambda x, y: (x.images[y].width/2,   x.images[y].heigth-1),
-        9: lambda x, y: (x.images[y].width-1,   x.images[y].heigth-1),
+        4: lambda x, y: (0,                     x.images[y].height/2),
+        5: lambda x, y: (x.images[y].width/2,   x.images[y].height/2),
+        6: lambda x, y: (x.images[y].width-1,   x.images[y].height/2),
+        7: lambda x, y: (0,                     x.images[y].height-1),
+        8: lambda x, y: (x.images[y].width/2,   x.images[y].height-1),
+        9: lambda x, y: (x.images[y].width-1,   x.images[y].height-1),
     }
 
     def __init__(self, name, imagesets, attribute=None, parent=None,
