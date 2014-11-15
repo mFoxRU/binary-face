@@ -22,6 +22,8 @@ class ImageItem(object):
         except Exception as e:
             exit('Could not load file "{0}". {1}'.
                  format(image, e))
+        if self.image.mode != 'RGBA':
+            self.image = self.image.convert('RGBA')
         self.width, self.height = self.image.size
         self.align = align
         self.offset = offset
@@ -176,7 +178,6 @@ class ImageSet(object):
         # against the top-left side
         adjust = [min(fnd(0, 0)), min(fnd(0, 1))]
         image_size = [max(fnd(1, 0))-adjust[0]+1, max(fnd(1, 1))-adjust[1]+1]
-
         image = Image.new('RGBA', image_size)
         for name, imageset in cls.imagesets.iteritems():
             image.paste(
@@ -184,6 +185,7 @@ class ImageSet(object):
                 (
                     cls.composed[name][0][0] - adjust[0],
                     cls.composed[name][0][1] - adjust[1]
-                )
+                ),
+                imageset.images[values[imageset.attribute]].image
             )
         image.save(filename+'.png')
