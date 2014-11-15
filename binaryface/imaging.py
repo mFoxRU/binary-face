@@ -26,9 +26,11 @@ class ImageItem(object):
         self.align = align
         self.offset = offset
 
+    @property
     def has_align(self):
         return True if self.align is not None else False
 
+    @property
     def has_offset(self):
         return True if self.offset is not None else False
 
@@ -123,7 +125,7 @@ class ImageSet(object):
         # Calculate align point coordinates
         value = values[self.attribute]
         parent_value = values[self.parent.attribute]
-        if self.images[value].has_align():
+        if self.images[value].has_align:
             align = self.images[value].align
         elif self.align is not None:
             align = self.align
@@ -172,8 +174,7 @@ class ImageSet(object):
         fnd = lambda x, y: (v[x][y] for v in cls.composed.itervalues())
         # Adjust images coordinates so that final image will be positioned
         # against the top-left side
-        adjust = [0 - min(fnd(0, 0)), 0 - min(fnd(0, 1))]
-
+        adjust = [min(fnd(0, 0)), min(fnd(0, 1))]
         image_size = [max(fnd(1, 0))-adjust[0]+1, max(fnd(1, 1))-adjust[1]+1]
 
         image = Image.new('RGBA', image_size)
@@ -181,9 +182,8 @@ class ImageSet(object):
             image.paste(
                 imageset.images[values[imageset.attribute]].image,
                 (
-                    cls.composed[name][0][0] + adjust[0],
-                    cls.composed[name][0][1] + adjust[1]
-                ),
-                imageset.images[values[imageset.attribute]].image
+                    cls.composed[name][0][0] - adjust[0],
+                    cls.composed[name][0][1] - adjust[1]
+                )
             )
         image.save(filename+'.png')
