@@ -23,7 +23,7 @@ def parse_args():
         dest='splitter',
         help='Separator for attribute sets. Default is \\n')
     parser.add_argument(
-        '--fill', action='store', metavar='VALUE', default=0,
+        '--fill', action='store', metavar='VALUE', default='0',
         help='Use VALUE for unused attributes. Default is 0')
     parser.add_argument(
         '--class', choices=('first', 'last', 'no'), default='last',

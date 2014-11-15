@@ -166,6 +166,11 @@ class ImageSet(object):
 
     @classmethod
     def make_image(cls, values, fill_value, filename):
+        if len(cls.imagesets) < len(values):
+            exit('Not enough attributes in template to visualize data')
+        elif len(cls.imagesets) > len(values):
+            attr_max = max(cls.attributes.iterkeys())
+            values.extend([fill_value for _ in xrange(attr_max-len(values)+1)])
         cls.composed = {}
         if not cls.imagesets:
             exit('No imagesets loaded')
