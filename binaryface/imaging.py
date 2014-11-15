@@ -134,8 +134,9 @@ class ImageSet(object):
         else:
             align = 1
         formula = self._align_formula[int(align)]
-        align_point = formula(self.parent, parent_value)
-
+        align_point = map(operator.add,
+                          self.composed[self.parent.name][0],
+                          formula(self.parent, parent_value))
         # Calculate coordinates with offset from align point
         if self.images[value].has_offset:
             offset = map(operator.add, align_point, self.images[value].offset)
