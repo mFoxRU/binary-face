@@ -67,7 +67,8 @@ def main():
     load_template(conf.template)
     data, classes = read_file(**conf.__dict__)
     for attribute_set, set_class in izip(data, classes):
-        imaging.ImageSet.make_image(attribute_set, conf.fill)
+        name = '_'.join(('class', set_class, 'values', ''.join(attribute_set)))
+        imaging.ImageSet.make_image(attribute_set, conf.fill, name)
 
 if __name__ == '__main__':
     main()

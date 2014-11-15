@@ -161,7 +161,7 @@ class ImageSet(object):
         self.composed[self.name] = [top_left, bottom_right]
 
     @classmethod
-    def make_image(cls, values, fill_value):
+    def make_image(cls, values, fill_value, filename):
         cls.composed = {}
         if not cls.imagesets:
             exit('No imagesets loaded')
@@ -186,4 +186,4 @@ class ImageSet(object):
                 ),
                 imageset.images[values[imageset.attribute]].image
             )
-        image.save(''.join(values)+'.png')
+        image.save(filename+'.png')
